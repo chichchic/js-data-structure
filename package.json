@@ -1,0 +1,12 @@
+{
+  "name": "js-data-structure",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/chichchic/js-data-structure.git",
+  "author": "chicichich <pch6789@naver.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
