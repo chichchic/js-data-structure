@@ -73,12 +73,12 @@ const DoublyLinkedList = {
     }
     return this.pushNext(this._tail.prev, data);
   },
-  erase: function pop(node) {
-    if (!LinkedNode.isPrototypeOf(node) || !this.has(node)) {
+  erase: function pop(target) {
+    if (!LinkedNode.isPrototypeOf(target) || !this.has(target)) {
       return false;
     }
-    node.prev.next = node.next;
-    node.next.prev = node.prev;
+    target.prev.next = target.next;
+    target.next.prev = target.prev;
     return true;
   },
   popFront: function popFront() {
