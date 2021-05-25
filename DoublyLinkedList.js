@@ -36,7 +36,7 @@ const DoublyLinkedList = {
     return this._tail.prev;
   },
   pushPrev: function push(target, data) {
-    if (!this.has(target)) {
+    if (!LinkedNode.isPrototypeOf(target) || !this.has(target)) {
       return false;
     }
     const newNode = Object.create(LinkedNode).init({
@@ -49,7 +49,7 @@ const DoublyLinkedList = {
     return true;
   },
   pushNext: function push(target, data) {
-    if (!this.has(target)) {
+    if (!LinkedNode.isPrototypeOf(target) || !this.has(target)) {
       return false;
     }
     const newNode = Object.create(LinkedNode).init({
@@ -74,7 +74,7 @@ const DoublyLinkedList = {
     return this.pushNext(this._tail.prev, data);
   },
   erase: function pop(node) {
-    if (!this.has(node)) {
+    if (!LinkedNode.isPrototypeOf(node) || !this.has(node)) {
       return false;
     }
     node.prev.next = node.next;
