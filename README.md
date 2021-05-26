@@ -30,6 +30,10 @@ data (default: null): 새로 만든 노드의 값
 
 ### Method
 
+- *DoublyLinkedList.prototype.size()*
+
+DoublyLinkedList 객체가 가지고 있는 노드의 개수를 반환합니다.
+
 - *DoublyLinkedList.prototype.isEmpty()*
 
 DoublyLinkedList 객체가 비어있으면 true, 아니면 false를 반환합니다.
