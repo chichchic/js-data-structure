@@ -113,4 +113,4 @@ const DoublyLinkedList = {
   },
 };
 
-export default DoublyLinkedList;
+export default Object.freeze(DoublyLinkedList);

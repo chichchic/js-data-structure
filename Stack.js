@@ -37,4 +37,4 @@ const Stack = {
   },
 };
 
-export default Stack;
+export default Object.freeze(Stack);
