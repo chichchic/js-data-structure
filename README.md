@@ -8,11 +8,11 @@
 
 *parameters*
 
-prev (default: null): 새로 만든 노드와 연결된 이전 노드.
+- prev (default: null): 새로 만든 노드와 연결된 이전 노드.
 
-next (default: null): 새로 만든 노드와 연결된 다음 노드.
+- next (default: null): 새로 만든 노드와 연결된 다음 노드.
 
-data (default: null): 새로 만든 노드의 값
+- data (default: null): 새로 만든 노드의 값
 
 *return*
 
@@ -70,11 +70,11 @@ DoublyLinkedList 객체 마지막에 data값을 가진 노드를 추가하고 tr
 
 DoublyLinkedList 객체에서 target를 삭제합니다. 만약, target이 LinkedNode가 아니거나 DoublyLinkedList 객체에 target값이 없을 경우 false를 반환합니다.
 
-- *DoublyLinkedList.prototype.popFront()
+- *DoublyLinkedList.prototype.popFront()*
 
 DoublyLinkedList 객체에서 첫 번째 노드를 삭제하고 true를 반환합니다. 만약, 비어있을 경우 false를 반환합니다.
 
-- *DoublyLinkedList.prototype.popBack()
+- *DoublyLinkedList.prototype.popBack()*
 
 DoublyLinkedList 객체에서 마지막 노드를 삭제하고 true를 반환합니다. 만약, 비어있을 경우 false를 반환합니다.
 
@@ -92,23 +92,23 @@ DoublyLinkedList 객체에서 마지막 노드를 삭제하고 true를 반환합
 
 ### Method
 
-- *DoublyLinkedList.prototype.size()*
+- *Stack.prototype.size()*
 
 Stack 객체가 가지고 있는 노드의 개수를 반환합니다.
 
-- *DoublyLinkedList.prototype.isEmpty()*
+- *Stack.prototype.isEmpty()*
 
 Stack 객체가 비어있으면 true, 아니면 false를 반환합니다.
 
-- *DoublyLinkedList.prototype.top()*
+- *Stack.prototype.top()*
 
 Stack 객체의 가장 상단에 있는 노드를 반환합니다. 만약 객체가 비어있을 경우 false를 반환합니다.
 
-- *DoublyLinkedList.prototype.push(data)*
+- *Stack.prototype.push(data)*
 
 Stack 객체의 가장 상단에 data값을 가진 노드를 추가하고 true를 반환합니다.
 
-- *DoublyLinkedList.prototype.pop()*
+- *Stack.prototype.pop()*
 
 Stack 객체의 가장 상단에 있는 노드를 제거하고 true를 반환합니다. 만약 객체가 비어있을 경우 false를 반환합니다.
 
