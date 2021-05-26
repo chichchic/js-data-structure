@@ -78,3 +78,37 @@ DoublyLinkedList 객체에서 첫 번째 노드를 삭제하고 true를 반환�
 
 DoublyLinkedList 객체에서 마지막 노드를 삭제하고 true를 반환합니다. 만약, 비어있을 경우 false를 반환합니다.
 
+
+
+## Stack(스택)
+
+### 생성 방법
+
+> Object.create(Stack).init()
+
+*return*
+
+새로운 Stack객체
+
+### Method
+
+- *DoublyLinkedList.prototype.size()*
+
+Stack 객체가 가지고 있는 노드의 개수를 반환합니다.
+
+- *DoublyLinkedList.prototype.isEmpty()*
+
+Stack 객체가 비어있으면 true, 아니면 false를 반환합니다.
+
+- *DoublyLinkedList.prototype.top()*
+
+Stack 객체의 가장 상단에 있는 노드를 반환합니다. 만약 객체가 비어있을 경우 false를 반환합니다.
+
+- *DoublyLinkedList.prototype.push(data)*
+
+Stack 객체의 가장 상단에 data값을 가진 노드를 추가하고 true를 반환합니다.
+
+- *DoublyLinkedList.prototype.pop()*
+
+Stack 객체의 가장 상단에 있는 노드를 제거하고 true를 반환합니다. 만약 객체가 비어있을 경우 false를 반환합니다.
+
