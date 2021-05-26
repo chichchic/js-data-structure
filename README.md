@@ -112,3 +112,27 @@ Stack 객체의 가장 상단에 data값을 가진 노드를 추가하고 true�
 
 Stack 객체의 가장 상단에 있는 노드를 제거하고 true를 반환합니다. 만약 객체가 비어있을 경우 false를 반환합니다.
 
+
+
+## Queue(큐)
+
+DoublyLinkedList를 사용해 만들어진 자료구조로, DoublyLinkedList가 가진 모든 메소드를 사용할 수 있습니다.
+
+### 생성 방법
+
+> Object.create(Queue).init()
+
+*return*
+
+새로운 Queue 객체
+
+### Method
+
+- *Queue.prototype.push(data)*
+
+Queue 객체 뒤에 data값을 가진 노드를 추가하고 true를 반환합니다.
+
+- *Queue.prototype.pop()*
+
+Queue 객체 가장 앞에 위치한 노드를 제거하고 true를 반환합니다. 만약 객체가 비어있을 경우 false를 반환합니다.
+
