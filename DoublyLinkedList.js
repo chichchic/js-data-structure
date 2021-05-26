@@ -5,7 +5,11 @@ const DoublyLinkedList = {
     this._head = Object.create(LinkedNode).init();
     this._tail = Object.create(LinkedNode).init({ prev: this._head });
     this._head.next = this._tail;
+    this._size = 0;
     return Object.seal(this);
+  },
+  size: function size() {
+    return this._size;
   },
   isEmpty: function isEmpty() {
     if (this._head.next === this._tail) {
@@ -46,6 +50,7 @@ const DoublyLinkedList = {
     });
     newNode.prev.next = newNode;
     newNode.next.prev = newNode;
+    this._size++;
     return true;
   },
   pushNext: function push(target, data) {
@@ -59,6 +64,7 @@ const DoublyLinkedList = {
     });
     newNode.next.prev = newNode;
     newNode.prev.next = newNode;
+    this._size++;
     return true;
   },
   pushFront: function pushFront(data) {
@@ -79,6 +85,7 @@ const DoublyLinkedList = {
     }
     target.prev.next = target.next;
     target.next.prev = target.prev;
+    this._size--;
     return true;
   },
   popFront: function popFront() {
@@ -101,6 +108,7 @@ const DoublyLinkedList = {
     });
     this._head.next = newNode;
     this._tail.prev = newNode;
+    this._size++;
     return true;
   },
 };
