@@ -1,4 +1,4 @@
-import LinkedNode from "./LinkedNode.js";
+import LinkedNode from "./Node/LinkedNode.js";
 
 const Stack = {
   init: function init() {
