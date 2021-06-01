@@ -15,7 +15,7 @@ const BinaryNode = {
     this.left = source.left;
     this.right = source.right;
     this.data = source.data;
-    return Object.seal(this);
+    return this;
   },
   _canLinked: function _canLinked(target) {
     if (target === null || BinaryNode.isPrototypeOf(target)) {

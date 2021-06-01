@@ -7,7 +7,7 @@ const LinkedNode = {
     this.prev = source.prev;
     this.next = source.next;
     this.data = source.data;
-    return Object.seal(this);
+    return this;
   },
   _canLinked: function _canLinked(target) {
     if (target === null || LinkedNode.isPrototypeOf(target)) {
