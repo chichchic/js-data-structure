@@ -18,6 +18,23 @@
 
 새로운 LinkedNode 객체
 
+## BinaryNode(양방향 노드)
+
+### 생성 방법
+
+> Object.create(BinaryNode).init({parent, left, right, data})
+
+*parameters*
+
+- parent(default: null): 새로 만든 노드와 연결된 부모 노드.
+- left(default: null): 새로 만든 노드와 연결된 왼쪽 노드.
+- right (default: null): 새로 만든 노드와 연결된 오른쪽 노드.
+- data (default: null): 새로 만든 노드의 값
+
+*return*
+
+새로운 BinaryNode 객체
+
 ## DoublyLinkedList(양방향 연결 리스트)
 
 ### 생성 방법
