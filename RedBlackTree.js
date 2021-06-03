@@ -224,6 +224,7 @@ const RedBlackTree = {
     if (deletedNode === this._root) {
       this._root = targetNode;
       targetNode.parent === null;
+      return true;
     } else {
       const deletedNodeparent = deletedNode.parent;
       targetNode.parent = deletedNodeparent;
@@ -233,9 +234,6 @@ const RedBlackTree = {
     }
     node.data = deletedNode.data;
     if (deletedNode.isRed === true) {
-      return true;
-    }
-    if (targetNode === nill) {
       return true;
     }
     return this._fixupDelete(targetNode);
