@@ -183,4 +183,49 @@ Heap 객체에 새로운 값을 삽입합니다.
 
 - *Heap.prototype.pop()*
 
-Heap 객체 가장 앞에 위치한 값을 제거합니다. 만약 객체가 비어있을 경우 false를 반환합니다.
+Heap 객체 가장 앞에 위치한 값을 제거합니다. 만약, 객체가 비어있을 경우 false를 반환합니다.
+
+## RedBlackTree(레드 블랙 트리)
+
+### 생성 방법
+
+> Object.create(RedBlackTree).init({compareFunc*})
+
+*parameter*
+
+- compareFunc(*): 정렬 순서를 결정하는데 사용되는 Boolean 반환값을 가지는 함수.
+
+*return*
+
+새로운 RedBlackTree객체
+
+### Method
+
+- *RedBlackTree.prototype.isEmpty()*
+
+RedBlackTree 객체가 비어있으면 true, 아니면 false를 반환합니다.
+
+- *RedBlackTree.prototype.size()*
+
+RedBlackTree 객체가 가지고 있는 노드의 수를 반환합니다.
+
+- *RedBlackTree.prototype.has(data)*
+
+RedBlackTree 객체가 data값을 가지고 있을 경우 true, 아닐 경우 false를 반환합니다.
+
+- *RedBlackTree.prototype.find(data)*
+
+RedBlackTree 객체가 data를 가지고 있을경우 해당 노드를, 아닐 경우 false를 반환합니다.
+
+- *RedBlackTree.prototype.print()*
+
+RedBlackTree 객체가 가지고 있는 노드의 값을 순서대로 배열에 담아 반환합니다. 만약, 객체가 비어있을 경우 false를 반환합니다.
+
+- *RedBlackTree.prototype.insert(data)*
+
+RedBlackTree에 data값을 삽입하고 true를 반환합니다.
+
+- *RedBlackTree.prototype.remove(node)*
+
+ RedBlackTree가 가지고 있는 해당 node를 삭제하고 true를 반환합니다.
+
