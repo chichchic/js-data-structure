@@ -32,6 +32,18 @@ const RedBlackTree = {
   has: function has(data) {
     return !!this.find(data);
   },
+  _hasNode: function _hasNode(node) {
+    let cursor = this._root;
+    while (cursor !== nill) {
+      if (cursor === node) {
+        return true;
+      }
+      cursor = this._compareFunc(cursor.data, node.data)
+        ? cursor.left
+        : cursor.right;
+    }
+    return false;
+  },
   find: function find(data) {
     let cursor = this._root;
     while (cursor !== nill) {
@@ -179,6 +191,9 @@ const RedBlackTree = {
       : node.parent.parent.left;
   },
   remove: function remove(node) {
+    if (!this._hasNode(node)) {
+      return false;
+    }
     //참고 링크 : https://ict-nroo.tistory.com/73
     this._size--;
     let deletedNode, targetNode;
