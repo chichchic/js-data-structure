@@ -223,7 +223,7 @@ const RedBlackTree = {
     }
     if (deletedNode === this._root) {
       this._root = targetNode;
-      targetNode.parent === null;
+      targetNode.parent = null;
       return true;
     } else {
       const deletedNodeparent = deletedNode.parent;
