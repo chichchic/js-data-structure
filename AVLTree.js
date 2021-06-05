@@ -105,7 +105,48 @@ const AVLTree = {
     }
     return true;
   },
-  remove: function remove(node) {},
+  remove: function remove(node) {
+    if (!this._hasNode(node)) {
+      return false;
+    }
+    let deletedNode, targetNode;
+    --this._size;
+    if (node.left === nill && node.right === nill) {
+      deletedNode = node;
+    } else if (node.left === nill) {
+      deletedNode = this._findSmallestChild(node.right);
+    } else {
+      deletedNode = this._findBiggestChild(node.left);
+    }
+
+    if (deletedNode.left === nill) {
+      targetNode = deletedNode.right;
+    } else {
+      targetNode = deletedNode.left;
+    }
+
+    if (deletedNode === this._root) {
+      this._root = nill;
+      return true;
+    }
+    const parent = deletedNode.parent;
+    const isLeft = parent.left === deletedNode ? true : false;
+    this._link(parent, targetNode, isLeft);
+
+    node.data = deletedNode.data;
+    let balanceCursor = parent;
+    while (balanceCursor !== null) {
+      const leftBalace = balanceCursor.left.balance;
+      const rightBalace = balanceCursor.right.balance;
+      if (Math.abs(leftBalace - rightBalace) < 2) {
+        this._setBalance(balanceCursor);
+      } else {
+        this._insertBalanceCheck(balanceCursor);
+      }
+      balanceCursor = balanceCursor.parent;
+    }
+    return true;
+  },
   _insertBalanceCheck(node) {
     const childDirection =
       node.left.balance > node.right.balance ? "left" : "right";
@@ -179,6 +220,20 @@ const AVLTree = {
       this._link(parent, x, false);
     }
     return true;
+  },
+  _findBiggestChild: function _findBiggestChild(node) {
+    let cursor = node;
+    while (cursor.right !== nill) {
+      cursor = cursor.right;
+    }
+    return cursor;
+  },
+  _findSmallestChild: function _findSmallestChild(node) {
+    let cursor = node;
+    while (cursor.left !== nill) {
+      cursor = cursor.left;
+    }
+    return cursor;
   },
 };
 
