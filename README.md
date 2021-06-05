@@ -227,5 +227,51 @@ RedBlackTree에 data값을 삽입하고 true를 반환합니다.
 
 - *RedBlackTree.prototype.remove(node)*
 
- RedBlackTree가 가지고 있는 해당 node를 삭제하고 true를 반환합니다.
+ RedBlackTree가 가지고 있는 해당 node를 삭제하고 true를 반환합니다. 만약 해당 node가 없을 경우 false를 반환합니다.
+
+
+
+## AVLTree(레드 블랙 트리)
+
+### 생성 방법
+
+> Object.create(AVLTree).init({compareFunc*})
+
+*parameter*
+
+- compareFunc(*): 정렬 순서를 결정하는데 사용되는 Boolean 반환값을 가지는 함수.
+
+*return*
+
+새로운 AVLTree객체
+
+### Method
+
+- *AVLTree.prototype.isEmpty()*
+
+AVLTree 객체가 비어있으면 true, 아니면 false를 반환합니다.
+
+- *AVLTree.prototype.size()*
+
+AVLTree 객체가 가지고 있는 노드의 수를 반환합니다.
+
+- *AVLTree.prototype.has(data)*
+
+AVLTree 객체가 data값을 가지고 있을 경우 true, 아닐 경우 false를 반환합니다.
+
+- *AVLTree.prototype.find(data)*
+
+AVLTree 객체가 data를 가지고 있을 경우 해당 노드를, 아닐 경우  false를 반환합니다.
+
+- *AVLTree.prototype.print()*
+
+AVLTree 객체가 가지고 있는 노드의 값을 순서대로 배열에 담아 반환합니다. 만약, 객체가 비어있을 경우 false를 반환합니다.
+
+- *AVLTree.prototype.insert(data)*
+
+AVLTree 객체에 data값을 삽입하고 true를 반환합니다.
+
+- *AVLTree.prototype.remove(node)*
+
+AVLTree가 가지고 있는 해당 node를 삭제하고 true를 반환합니다. 만약 해당 node가 없을 경우 false를 반환합니다.
 
