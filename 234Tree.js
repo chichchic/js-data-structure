@@ -18,26 +18,29 @@ const ttfTree = {
   size: function size() {
     return this._size;
   },
-  has: function has(data) {
+  find: function find(data) {
     let cursor = this._root;
+    let keyIndex;
     while (cursor !== null) {
-      let childIndex = 0;
-      let findData = false;
-      cursor.keys.forEach((val) => {
-        if (val < data) {
-          ++childIndex;
-        }
-        if (val === data) {
-          findData = true;
-        }
-      });
-      if (findData) {
-        return true;
-      } else {
-        cursor = this.children[childIndex];
+      keyIndex = 0;
+      if (this._compareFunc(data, cursor.keys[keyIndex].data)) {
+        cursor = cursor.keys[keyIndex].prev;
+        continue;
       }
+      for (; keyIndex < cursor.size; ++keyIndex) {
+        if (cursor.keys[keyIndex].data === data) {
+          return [cursor, keyIndex];
+        }
+        if (this._compareFunc(data, cursor.keys[keyIndex].data)) {
+          break;
+        }
+      }
+      cursor = cursor.keys[keyIndex - 1].next;
     }
     return false;
+  },
+  has: function has(data) {
+    return !!this.find(data);
   },
   print: function print() {
     if (this.isEmpty()) {
@@ -135,6 +138,11 @@ const ttfTree = {
     }
     node.keys.splice(1);
     return parent;
+  },
+  remove: function remove(data) {
+    if (!this.has(data)) {
+      return false;
+    }
   },
 };
 
