@@ -114,6 +114,7 @@ const ttfTree = {
       }
       node.parent = this._root;
       node.keys.splice(1);
+      this._link(this._root);
       return this._root;
     }
     const parent = node.parent;
@@ -137,167 +138,174 @@ const ttfTree = {
       next.keys[0].prev.parent = next;
     }
     node.keys.splice(1);
+    this._link(parent);
     return parent;
   },
-  remove: function remove(data) {
-    const dataPostion = this.find(data);
-    if (!dataPostion) {
-      return false;
+  remove: function remove(targetNode, targetNodeKeyIndex) {
+    if (!targetNode.isLeaf) {
+      const [deletedNode, deletedNodeKeyIndex] = this._findMinimum(
+        targetNode.keys[targetNodeKeyIndex].next
+      );
+      const targetData = targetNode.keys[targetNodeKeyIndex].data;
+      targetNode.keys[targetNodeKeyIndex].data =
+        deletedNode.keys[deletedNodeKeyIndex].data;
+      deletedNode.keys[deletedNodeKeyIndex].data = targetData;
+      return this.remove(deletedNode, deletedNodeKeyIndex);
     }
-    --this._size;
-    let [cursor, keyIndex] = dataPostion;
-    const target = cursor.keys[keyIndex];
-    if (!cursor.isLeaf) {
-      cursor = target.next;
-    }
-    while (!cursor.isLeaf) {
-      if (cursor.size > 1) {
-        cursor = cursor.keys[0].prev;
-        continue;
-      }
-      cursor = this._fusion(cursor);
-      const tempIndex = cursor.keys.findIndex((val) => data === val.data);
-      if (tempIndex > -1) {
-        cursor = cursor.keys[tempIndex].next;
-      }
-    }
-    if (cursor !== this._root && cursor.size === 1) {
-      cursor = this._fusion(cursor);
-    }
-    const targetIndex = cursor.keys.findIndex((val) => data === val.data);
-    if (targetIndex > -1) {
-      cursor.keys.splice(targetIndex, 1);
+    if (targetNode.size > 1 || targetNode === this._root) {
+      targetNode.keys.splice(targetNodeKeyIndex, 1);
+      --this._size;
       if (this._size === 0) {
         this._root = null;
       }
       return true;
     }
-    target.data = cursor.keys[0].data;
-    cursor.keys.shift();
-    return true;
+    const [deletedNode, deleteData] = this._fusion(
+      targetNode,
+      targetNodeKeyIndex
+    );
+    --this._size;
+    return this._removeByKeyData(deletedNode, deleteData);
   },
-  _fusion: function _fusion(node) {
-    let parent = node.parent;
-    if (parent !== this._root && parent.size === 1) {
-      parent = this._fusion(parent);
-    }
-    const currentData = node.keys[0].data;
-    let leftSibling = null;
-    let rightSibling = null;
-    let leftParent = null;
-    let rightParent = null;
-    let nodeParent;
-    let keyIndex = 0;
-    for (; keyIndex < parent.size; ++keyIndex) {
-      if (this._compareFunc(currentData, parent.keys[keyIndex].data)) {
-        if (keyIndex === 0) {
-          nodeParent = parent.keys[0];
-          rightSibling = parent.keys[0].next;
-          rightParent = parent.keys[0];
-        } else if (keyIndex === 1) {
-          nodeParent = parent.keys[0];
-          rightSibling = parent.keys[1].next;
-          rightParent = parent.keys[1];
-          leftSibling = parent.keys[0].prev;
-          leftParent = parent.keys[0];
-        } else {
-          nodeParent = parent.keys[1];
-          rightSibling = parent.keys[2].next;
-          rightParent = parent.keys[2];
-          leftSibling = parent.keys[0].next;
-          leftParent = parent.keys[0];
-        }
-        break;
-      }
-    }
-    if (!rightSibling) {
-      nodeParent = parent.keys[keyIndex - 1];
-      if (keyIndex === 1) {
-        leftSibling = parent.keys[0].prev;
-        leftParent = parent.keys[0];
-      } else {
-        leftSibling = parent.keys[keyIndex - 2].next;
-        leftParent = parent.keys[keyIndex - 2];
-      }
-    }
-    if (leftSibling && leftSibling.size > 1) {
-      const nodeParentData = nodeParent.data;
-      nodeParent.data = leftSibling.keys[leftSibling.size - 1].data;
-      const leftSiblingLastNext = leftSibling.keys[leftSibling.size - 1].next;
+  _fusion: function _fusion(targetNode, targetNodeKeyIndex) {
+    const leftResult = this._findLeftSibling(targetNode);
+    const rightResult = this._findRightSibling(targetNode);
+    const parent = targetNode.parent;
+    const targetData = targetNode.keys[targetNodeKeyIndex].data;
+    if (leftResult && leftResult[0].size > 1) {
+      const [leftSibling, nodeParentKeyIndex] = leftResult;
+      const leftSiblingLast = leftSibling.keys[leftSibling.size - 1];
+      const deletedData = leftSiblingLast.data;
+      const leftSiblingLastNext = leftSiblingLast.next;
       leftSibling.keys.pop();
-      node.insert(nodeParentData);
-      node.keys[0].prev = leftSiblingLastNext;
-      if (leftSiblingLastNext) {
-        leftSiblingLastNext.parent = node;
+      targetNode.insert(parent.keys[nodeParentKeyIndex].data);
+      parent.keys[nodeParentKeyIndex].data = deletedData;
+      if (!targetNode.isLeaf) {
+        targetNode.keys[0].prev = leftSiblingLastNext;
+        targetNode.keys[0].next = targetNode.keys[1].prev;
+        targetNode.keys[1].prev = null;
+        this._link(targetNode);
       }
-      node.keys[0].next = node.keys[1].prev;
-      node.keys[1].prev = null;
-      return node;
-    } else if (rightSibling && rightSibling.size > 1) {
-      const rightParentData = rightParent.data;
-      rightParent.data = rightSibling.keys[0].data;
-      const rightSiblingPrev = rightSibling.keys[0].prev;
-      rightSibling.keys[1].prev = rightSibling.keys[0].next;
+      return [targetNode, targetData];
+    }
+    if (rightResult && rightResult[0].size > 1) {
+      const [rightSibling, rightParentKeyIndex] = rightResult;
+      const rightSiblingFirst = rightSibling.keys[0];
+      const deletedData = rightSiblingFirst.data;
+      const rightSiblingFirstPrev = rightSiblingFirst.prev;
+      const rightSiblingFirstNext = rightSiblingFirst.next;
       rightSibling.keys.shift();
-      node.insert(rightParentData);
-      const lastIndex = node.size - 1;
-      node.keys[lastIndex].next = rightSiblingPrev;
-      if (rightSiblingPrev) {
-        rightSiblingPrev.parent = node;
+      targetNode.insert(parent.keys[rightParentKeyIndex].data);
+      parent.keys[rightParentKeyIndex].data = deletedData;
+      if (!targetNode.isLeaf) {
+        targetNode.keys[targetNode.size - 1].next = rightSiblingFirstPrev;
+        rightSibling.keys[0].prev = rightSiblingFirstNext;
+        this._link(targetNode);
+        this._link(rightSibling);
       }
-      return node;
-    } else if (parent.size > 1) {
-      if (leftSibling !== null) {
-        const nodeParentIndex = parent.keys.findIndex(
-          (val) => val.data === nodeParent.data
-        );
-        parent.keys.splice(nodeParentIndex, 1);
-        leftSibling.insert(nodeParent.data);
-        leftSibling.insert(currentData);
-        if (node.keys[0].prev) {
-          node.keys[0].prev.parent = leftSibling;
-        }
-        leftSibling.keys[1].next = node.keys[0].prev;
-        if (node.keys[0].next) {
-          node.keys[0].next.parent = leftSibling;
-        }
-        leftSibling.keys[2].next = node.keys[0].next;
-        if (nodeParentIndex === 0) {
-          parent.keys[0].prev = leftSibling;
-          leftSibling.parent = parent;
-        }
-        return leftSibling;
-      } else {
-        node.insert(rightSibling.keys[0].data);
-        node.insert(nodeParent.data);
-        node.keys[1].next = rightSibling.keys[0].prev;
-        if (node.keys[1].next) {
-          node.keys[1].next.parent = node;
-        }
-        node.keys[2].next = rightSibling.keys[0].next;
-        if (node.keys[2].next) {
-          node.keys[2].next.parent = node;
-        }
-        parent.keys.shift();
-        parent.keys[0].prev = node;
-        return node;
+      return [targetNode, targetData];
+    }
+    if (parent.size === 1) {
+      if (parent !== this._root) {
+        this._fusion(parent, 0);
+        return this._fusion(targetNode, targetNodeKeyIndex);
       }
-    } else {
-      parent.isLeaf = node.isLeaf;
-      if (rightSibling !== null) {
-        parent.keys.unshift(node.keys[0]);
-        parent.keys.push(rightSibling.keys[0]);
-        parent.keys[1].next = rightSibling.keys[0].prev;
-      } else {
-        parent.keys.unshift(leftSibling.keys[0]);
-        parent.keys.push(node.keys[0]);
-        parent.keys[1].next = node.keys[0].prev;
+      if (leftResult) {
+        parent.keys.push(targetNode.keys[0]);
+        parent.keys.unshift(leftResult[0].keys[0]);
+      }
+      if (rightResult) {
+        parent.keys.push(rightResult[0].keys[0]);
+        parent.keys.unshift(targetNode.keys[0]);
       }
       parent.keys[1].prev = null;
+      parent.keys[1].next = parent.keys[2].prev;
       parent.keys[2].prev = null;
+      parent.isLeaf = targetNode.isLeaf;
       this._link(parent);
-      return parent;
+      return [parent, targetData];
     }
+    if (leftResult) {
+      const [leftSibling, nodeParentKeyIndex] = leftResult;
+      const leftParentKeyIndex =
+        nodeParentKeyIndex === 0 ? 0 : nodeParentKeyIndex - 1;
+      leftSibling.insert(parent.keys[nodeParentKeyIndex].data);
+      leftSibling.insert(targetData);
+      parent.keys.splice(nodeParentKeyIndex, 1);
+      if (nodeParentKeyIndex === 0) {
+        parent.keys[0].prev = leftSibling;
+      }
+      if (!leftSibling.isLeaf) {
+        leftSibling.keys[1].next = targetNode.keys[0].prev;
+        leftSibling.keys[2].next = targetNode.keys[0].next;
+        this._link(leftSibling);
+      }
+      return [leftSibling, targetData];
+    }
+    const [rightSibling, rightParentKeyIndex] = rightResult;
+    const nodeParentKeyIndex =
+      rightParentKeyIndex === 0 ? 0 : rightParentKeyIndex - 1;
+    targetNode.insert(parent.keys[nodeParentKeyIndex].data);
+    targetNode.insert(rightSibling.keys[0].data);
+    parent.keys.splice(rightParentKeyIndex, 1);
+    if (rightParentKeyIndex === 0) {
+      parent.keys[0].prev = targetNode;
+    }
+    if (!targetNode.isLeaf) {
+      targetNode.keys[1].next = rightSibling.keys[0].prev;
+      targetNode.keys[2].next = rightSibling.keys[0].next;
+      this._link(targetNode);
+    }
+    return [targetNode, targetData];
+  },
+  _removeByKeyData: function _removeByKeyData(targetNode, targetData) {
+    if (!targetNode.isLeaf) {
+      console.error("wrong delete request");
+      return false;
+    }
+    const newKeyIndex = targetNode.keys.findIndex(
+      (val) => val.data === targetData
+    );
+    targetNode.keys.splice(newKeyIndex, 1);
+    return true;
+  },
+  _findLeftSibling: function _findLeftSibling(node) {
+    const parent = node.parent;
+    if (parent.keys[0].prev === node) {
+      return null;
+    }
+    let keyIndex = 0;
+    for (; keyIndex < parent.size; ++keyIndex) {
+      if (parent.keys[keyIndex].next === node) break;
+    }
+    if (keyIndex === 0) {
+      return [parent.keys[0].prev, 0];
+    }
+    return [parent.keys[keyIndex - 1].next, keyIndex];
+  },
+  _findRightSibling: function _findRightSibling(node) {
+    const parent = node.parent;
+    if (parent.keys[0].prev === node) {
+      return [parent.keys[0].next, 0];
+    }
+    for (let keyIndex = 0; keyIndex < parent.size; ++keyIndex) {
+      if (parent.keys[keyIndex].next === node && keyIndex + 1 < parent.size) {
+        return [parent.keys[keyIndex + 1].next, keyIndex + 1];
+      }
+    }
+    return null;
+  },
+  _findMaximum: function _findMaximum(node) {
+    while (node.keys[node.size - 1].next !== null) {
+      node = node.keys[node.size - 1].next;
+    }
+    return [node, node.size - 1];
+  },
+  _findMinimum: function _findMinimum(node) {
+    while (node.keys[0].prev !== null) {
+      node = node.keys[0].prev;
+    }
+    return [node, 0];
   },
   _link: function _link(parent) {
     if (parent.isLeaf) {
