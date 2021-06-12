@@ -76,7 +76,7 @@ const ttfTree = {
         cursor = this._split(cursor);
       }
       if (cursor.isLeaf) {
-        cursor.insert(data, this.compareFunc);
+        cursor.insert(data);
         break;
       }
       if (compareFunc(data, cursor.keys[0].data)) {
