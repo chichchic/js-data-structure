@@ -231,7 +231,7 @@ RedBlackTree에 data값을 삽입하고 true를 반환합니다.
 
 
 
-## AVLTree(레드 블랙 트리)
+## AVLTree
 
 ### 생성 방법
 
