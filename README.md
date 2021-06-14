@@ -275,3 +275,48 @@ AVLTree 객체에 data값을 삽입하고 true를 반환합니다.
 
 AVLTree가 가지고 있는 해당 node를 삭제하고 true를 반환합니다. 만약 해당 node가 없을 경우 false를 반환합니다.
 
+
+
+## 234Tree
+
+### 생성 방법
+
+> Object.create(ttfTree).init({compareFunc*})
+
+*parameter*
+
+- compareFunc(*): 정렬 순서를 결정하는데 사용되는 Boolean 반환값을 가지는 함수.
+
+*return*
+
+새로운 ttfTree객체
+
+### Method
+
+- *ttfTree.prototype.isEmpty()*
+
+ttfTree 객체가 비어있으면 true, 아니면 false를 반환합니다.
+
+- *ttfTree.prototype.size()*
+
+ttfTree 객체가 가지고 있는 노드의 수를 반환합니다.
+
+- *ttfTree.prototype.has(data)*
+
+ttfTree 객체가 data값을 가지고 있을 경우 true, 아닐 경우 false를 반환합니다.
+
+- *ttfTree.prototype.find(data)*
+
+ttfTree 객체가 data를 가지고 있을 경우 해당 노드와 노드에서 몇 번째 키값인지 배열에 담아서 반환합니다. ttfTree 객체에서 data를 찾을 수 없을 경우 false를 반환합니다.
+
+- *ttfTree.prototype.print()*
+
+ttfTree 객체가 가지고 있는 노드의 값을 순서대로 배열에 담아 반환합니다. 만약, 객체가 비어있을 경우 false를 반환합니다.
+
+- *ttfTree.prototype.insert(data)*
+
+ttfTree 객체에 data값을 삽입하고 true를 반환합니다.
+
+- *ttfTree.prototype.remove(node)*
+
+ttfTree가 가지고 있는 해당 node를 삭제하고 true를 반환합니다. 만약 해당 node가 없을 경우 false를 반환합니다.
