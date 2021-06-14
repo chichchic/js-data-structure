@@ -12,6 +12,7 @@ const BTree = {
     this._compareFunc = compareFunc;
     this._size = 0;
     this._max = max;
+    this._min = Math.ceil(max / 2) - 1;
     return this;
   },
   isEmpty: function isEmpty() {
@@ -123,7 +124,199 @@ const BTree = {
     }
     return parent;
   },
-  remove: function remove(data) {},
+  remove: function remove(targetNode, targetIndex) {
+    if (!targetNode.isLeaf) {
+      const [deletedNode, deletedIndex] = this._findMinimum(
+        targetNode.keys[targetIndex].next
+      );
+      const targetData = targetNode.keys[targetIndex].data;
+      targetNode.keys[targetIndex].data = deletedNode.keys[deletedIndex].data;
+      deletedNode.keys[deletedIndex].data = targetData;
+      return this.remove(deletedNode, deletedIndex);
+    }
+    if (targetNode.size > this._min || targetNode === this._root) {
+      targetNode.keys.splice(targetIndex, 1);
+      --this._size;
+      if (this._size === 0) {
+        this._root = null;
+      }
+      return true;
+    }
+    const [deletedNode, deleteData] = this._fusion(targetNode, targetIndex);
+    --this._size;
+    return this._removeByKeyData(deletedNode, deleteData);
+  },
+  _fusion: function _fusion(targetNode, targetIndex) {
+    const { leftSiblingKeys, leftParentKey } =
+      this._findLeftSibling(targetNode);
+    const { rightSiblingKeys, rightParentkey } =
+      this._findRightSibling(targetNode);
+    const targetData = targetNode.keys[targetIndex].data;
+    const parent = targetNode.parent;
+    if (leftSiblingKeys.length > this._min) {
+      this._getLeftSiblingKey(targetNode.keys, leftSiblingKeys, leftParentKey);
+      return [targetNode, targetData];
+    }
+    if (rightSiblingKeys.length > this._min) {
+      this._getRightSiblingKey(
+        targetNode.keys,
+        rightSiblingKeys,
+        rightParentkey
+      );
+      return [targetNode, targetData];
+    }
+    if (parent.size > this._min || parent === this._root) {
+      if (leftParentKey) {
+        return [
+          this._mergeNode(
+            leftSiblingKeys,
+            targetNode.keys,
+            parent,
+            leftParentKey
+          ),
+          targetData,
+        ];
+      }
+      return [
+        this._mergeNode(
+          targetNode.keys,
+          rightSiblingKeys,
+          parent,
+          rightParentkey
+        ),
+        targetData,
+      ];
+    }
+    this._fusion(parent, 0);
+    return this._fusion(targetNode, targetIndex);
+  },
+  _mergeNode: function _mergeNode(
+    leftNodeKeys,
+    rightNodeKeys,
+    parent,
+    parentIndex
+  ) {
+    const compareFunc = this._compareFunc;
+    const mergedNode = Object.create(BNode).init({
+      compareFunc,
+      isLeaf: leftNodeKeys.isLeaf,
+      parent,
+    });
+    const parentNodeKeys = parent.keys;
+    if (parentIndex > 0) {
+      parentNodeKeys[parentIndex - 1].next = mergedNode;
+    }
+    if (parentIndex < parentNodeKeys.length - 1) {
+      parentNodeKeys[parentIndex + 1].prev = mergedNode;
+    }
+    parentNodeKeys[parentIndex].prev =
+      leftNodeKeys[leftNodeKeys.length - 1].next;
+    parentNodeKeys[parentIndex].next = rightNodeKeys[0].prev;
+    mergedNode.keys = [
+      ...leftNodeKeys,
+      parentNodeKeys[parentIndex],
+      ...rightNodeKeys,
+    ];
+    parentNodeKeys.splice(parentIndex);
+    if (parentNodeKeys.length === 0) {
+      this._root = mergedNode;
+      mergedNode.parent = null;
+    }
+    return mergedNode;
+  },
+  _getLeftSiblingKey: function _getLeftSiblingKey(
+    targetKeys,
+    siblingKeys,
+    parentKey
+  ) {
+    const siblingLastKey = siblingKeys[siblingKeys.length - 1];
+    siblingLastKey.prev = siblingLastKey.next;
+    siblingLastKey.next = targetKeys[0].prev;
+    targetKeys.unshift(siblingLastKey);
+    const parentData = parentKey.data;
+    parentKey.data = siblingLastKey.data;
+    siblingLastKey.data = parentData;
+  },
+  _getRightSiblingKey: function _getRightSiblingKey(
+    targetKeys,
+    siblingKeys,
+    parentKey
+  ) {
+    const siblingFirstKey = siblingKeys[0];
+    siblingFirstKey.next = siblingFirstKey.prev;
+    siblingFirstKey.prev = targetKeys[targetKeys.length - 1].next;
+    targetKeys.push(siblingFirstKey);
+    const parentData = parentKey.data;
+    parentKey.data = siblingFirstKey.data;
+    siblingFirstKey.data = parentData;
+  },
+  _removeByKeyData: function _removeByKeyData(targetNode, targetData) {
+    if (!targetNode.isLeaf) {
+      console.error("wrong delete request");
+      return false;
+    }
+    const newKeyIndex = targetNode.keys.findIndex(
+      (val) => val.data === targetData
+    );
+    targetNode.keys.splice(newKeyIndex, 1);
+    return true;
+  },
+  _findLeftSiblingKeys: function _findLeftSiblingKeys(node) {
+    const parent = node.parent;
+    let leftSiblingKeys = [];
+    let leftParentKey = null;
+    if (parent.keys[0].prev === node) {
+      return { leftSiblingKeys, leftParentKey };
+    }
+    let keyIndex = 0;
+    for (; keyIndex < parent.size; ++keyIndex) {
+      leftParentKey = parent.keys[keyIndex];
+      if (leftParentKey.next === node) {
+        leftSiblingKeys = leftParentKey.next.keys;
+        break;
+      }
+    }
+    if (keyIndex === 0) {
+      leftSiblingKeys = parentKey.prev.keys;
+    }
+    return { leftSiblingKeys, leftParentKey };
+  },
+  _findRightSiblingKeys: function _findRightSiblingKeys(node) {
+    const parent = node.parent;
+    let rightSiblingKeys = [];
+    let rightParentkey = parent.keys[0];
+
+    for (let keyIndex = 0; keyIndex < parent.size; ++keyIndex) {
+      rightParentkey = parent.keys[keyIndex];
+      if (rightParentkey.prev === node) {
+        rightSiblingKeys = rightParentkey.next.keys;
+        return { rightSiblingKeys, rightParentkey };
+      }
+    }
+    return { rightSiblingKeys: [], rightParentkey: null };
+  },
+  _findMaximum: function _findMaximum(node) {
+    while (node.keys[node.size - 1].next !== null) {
+      node = node.keys[node.size - 1].next;
+    }
+    return [node, node.size - 1];
+  },
+  _findMinimum: function _findMinimum(node) {
+    while (node.keys[0].prev !== null) {
+      node = node.keys[0].prev;
+    }
+    return [node, 0];
+  },
+  _link: function _link(parent) {
+    if (parent.isLeaf) {
+      return true;
+    }
+    parent.keys[0].prev.parent = parent;
+    for (let i = 0; i < parent.size; ++i) {
+      parent.keys[i].next.parent = parent;
+    }
+    return true;
+  },
 };
 
 export default BTree;
