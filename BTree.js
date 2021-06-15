@@ -112,7 +112,7 @@ const BTree = {
       isLeaf: node.isLeaf,
       parent,
     });
-    prev.keys = node.keys.slice(0, 2);
+    prev.keys = node.keys.slice(0, mid);
     parent.keys[insertIndex].next = next;
     parent.keys[insertIndex].prev = prev;
     if (insertIndex > 0) {
