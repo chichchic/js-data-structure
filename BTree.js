@@ -1,6 +1,5 @@
 import BNode from "./Node/BNode.js";
 
-//NOTE: 홀수 개수의 값을 가지는 BNode.
 const BTree = {
   init: function init({ compareFunc, max = 3 }) {
     if (typeof compareFunc !== "function") {
@@ -100,7 +99,7 @@ const BTree = {
       node === this._root
         ? Object.create(BNode).init({ compareFunc })
         : node.parent;
-    const mid = Math.floor(this._max / 2);
+    const mid = this._min;
     const insertIndex = parent.insert(node.keys[mid].data);
     const next = Object.create(BNode).init({
       compareFunc,
