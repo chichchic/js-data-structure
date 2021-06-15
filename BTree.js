@@ -92,6 +92,7 @@ const BTree = {
       }
       cursor = cursor.keys[keyIndex - 1].next;
     }
+    return true;
   },
   _split: function _split(node) {
     const compareFunc = this._compareFunc;
