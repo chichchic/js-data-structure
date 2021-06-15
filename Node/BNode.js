@@ -16,21 +16,21 @@ const BNode = {
   },
   insert: function insert(data) {
     const newNode = Object.create(LinkedNode).init({ data });
-    let spliceIndex = 0;
-    for (; spliceIndex < this.size; ++spliceIndex) {
-      if (this.compareFunc(data, this.keys[spliceIndex].data)) {
+    let sliceIndex = 0;
+    for (; sliceIndex < this.size; ++sliceIndex) {
+      if (this.compareFunc(data, this.keys[sliceIndex].data)) {
         break;
       }
     }
-    this.keys.splice(spliceIndex, 0, newNode);
+    this.keys.splice(sliceIndex, 0, newNode);
 
-    if (spliceIndex > 0) {
-      newNode.prev = this.keys[spliceIndex - 1].next;
+    if (sliceIndex > 0) {
+      newNode.prev = this.keys[sliceIndex - 1].next;
     }
-    if (spliceIndex < this.size - 1) {
-      newNode.next = this.keys[spliceIndex + 1].prev;
+    if (sliceIndex < this.size - 1) {
+      newNode.next = this.keys[sliceIndex + 1].prev;
     }
-    return spliceIndex;
+    return sliceIndex;
   },
   findKey: function findKey(data) {
     let keyIndex = 0;
