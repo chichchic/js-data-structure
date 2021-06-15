@@ -32,6 +32,16 @@ const BNode = {
     }
     return spliceIndex;
   },
+  findKey: function findKey(data) {
+    let keyIndex = 0;
+    for (; keyIndex < this.size; ++keyIndex) {
+      if (this.compareFunc(data, this.keys[keyIndex].data)) {
+        return { keyIndex, childNode: this.keys[keyIndex].prev };
+      }
+    }
+    keyIndex--;
+    return { keyIndex, childNode: this.keys[keyIndex].next };
+  },
 };
 
 Object.defineProperty(BNode, "size", {
