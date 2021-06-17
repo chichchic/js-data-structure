@@ -124,20 +124,6 @@ const BplusTree = {
     }
     return parent;
   },
-  _findParentKey: function _findParentKey(node) {
-    const parent = node.parent;
-    if (parent === null) {
-      return false;
-    }
-    let keyIndex = 0;
-    for (let keyIndex = 0; keyIndex < parent.size; ++keyIndex) {
-      if (parent[keyIndex].prev === node) {
-        return { parentKey: parent[keyIndex], keyIndex };
-      }
-    }
-    --keyIndex;
-    return { parentKey: parent[keyIndex], keyIndex };
-  },
   _link: function _link(parent) {
     if (parent.isLeaf) {
       return true;
@@ -148,7 +134,81 @@ const BplusTree = {
     }
     return true;
   },
-  remove: function remove() {},
+  remove: function remove(data) {
+    const nodePosition = this.find(data);
+    if (!nodePosition) {
+      return false;
+    }
+    const { node, keyIndex } = nodePosition;
+    if (!this._reDistribute(node)) {
+      this._merge();
+    }
+  },
+  _reDistribute: function _reDistribute(node) {
+    const { leftSiblingKeys, leftParentKey } = this._findLeftSibling(node);
+    const { rightSiblingKeys, rightParentkey } = this._findRightSibling(node);
+    const parent = node.parent;
+    let fromIndex, toIndex;
+    let fixKey, workKeys, fixEntry;
+    const maxSiblingLen = Math.max(
+      leftSiblingKeys.length,
+      rightSiblingKeys.length
+    );
+    if (maxSiblingLen < this._min) {
+      return false;
+    }
+    if (leftSiblingKeys.length > rightSiblingKeys.length) {
+      fromIndex = leftSiblingKeys.length - 1;
+      toIndex = 0;
+      fixEntry = parent.keys[parent.findKey(node.keys[0]).keyIndex];
+      fixKey = leftSiblingKeys.keys[fromIndex];
+      workKeys = leftSiblingKeys;
+    } else {
+      fromIndex = 0;
+      toIndex = node.length;
+      fixEntry = parent.keys[parent.findKey(node.keys[toIndex]).keyIndex];
+      fixKey = rightSiblingKeys.keys[1];
+      workKeys = rightSiblingKeys;
+    }
+    fixEntry.data = fixKey.data;
+    node.keys.splice(toIndex, 0, workKeys.keys[fromIndex]);
+    workKeys.splice(fromIndex);
+    return true;
+  },
+  _findLeftSiblingKeys: function _findLeftSiblingKeys(node) {
+    const parent = node.parent;
+    let leftSiblingKeys = [];
+    let leftParentKey = null;
+    if (parent.keys[0].prev === node) {
+      return { leftSiblingKeys, leftParentKey };
+    }
+    let keyIndex = 0;
+    for (; keyIndex < parent.size; ++keyIndex) {
+      leftParentKey = parent.keys[keyIndex];
+      if (leftParentKey.next === node) {
+        leftSiblingKeys = leftParentKey.next.keys;
+        break;
+      }
+    }
+    if (keyIndex === 0) {
+      leftSiblingKeys = parentKey.prev.keys;
+    }
+    return { leftSiblingKeys, leftParentKey };
+  },
+  _findRightSiblingKeys: function _findRightSiblingKeys(node) {
+    const parent = node.parent;
+    let rightSiblingKeys = [];
+    let rightParentkey = parent.keys[0];
+
+    for (let keyIndex = 0; keyIndex < parent.size; ++keyIndex) {
+      rightParentkey = parent.keys[keyIndex];
+      if (rightParentkey.prev === node) {
+        rightSiblingKeys = rightParentkey.next.keys;
+        return { rightSiblingKeys, rightParentkey };
+      }
+    }
+    return { rightSiblingKeys: [], rightParentkey: null };
+  },
 };
 
 export default BplusTree;
