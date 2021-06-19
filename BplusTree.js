@@ -33,10 +33,11 @@ const BplusTree = {
       const { keyIndex, childNode } = cursor.findKey(data);
       cursor = childNode;
     }
-    const { keyIndex, childNode } = cursor.findKey(data);
-    if (cursor[keyIndex] === data) {
+    const keyIndex = cursor.keys.findIndex((val) => val.data === data);
+    if (keyIndex >= 0) {
       return { node: cursor, keyIndex };
     }
+    return false;
   },
   has: function has(data) {
     return !!this.find(data);
@@ -139,75 +140,211 @@ const BplusTree = {
     if (!nodePosition) {
       return false;
     }
-    const { node, keyIndex } = nodePosition;
-    if (!this._reDistribute(node)) {
-      this._merge();
+    let { node, keyIndex } = nodePosition;
+    --this._size;
+    if (this._size === 0) {
+      this._root = null;
+      return true;
     }
+    if (node === this._root) {
+      node.keys.splice(keyIndex, 1);
+      return true;
+    }
+    if (node.size === this._min) {
+      node = this._fixNode(node);
+    }
+    this._removeByKeyData(node, data);
+    return true;
+  },
+  _removeByKeyData: function _removeByKeyData(node, data) {
+    if (!node.isLeaf) {
+      console.error("Wrong request");
+      return false;
+    }
+    const targeIndex = node.keys.findIndex((val) => val.data === data);
+    if (targeIndex < 0) {
+      console.error("Can't find data");
+      return false;
+    }
+    node.keys.splice(targeIndex, 1);
+    return true;
+  },
+  _fixNode: function fixNode(node) {
+    if (!this._reDistribute(node)) {
+      return this._merge(node);
+    }
+    return node;
+  },
+  _merge: function _merge(node) {
+    let parent = node.parent;
+    if (parent.size <= this._min && parent !== this._root) {
+      parent = this._fixNode(parent);
+      this._link(parent);
+    }
+    const { leftSibling, leftSiblingKeys, leftKeyIndex } =
+      this._findLeftSiblingKeys(node);
+    const { rightSibling, rightSiblingKeys, rightKeyIndex } =
+      this._findRightSiblingKeys(node);
+    let mergedNode;
+    if (leftKeyIndex >= 0) {
+      mergedNode = this._mergeNode(
+        leftSiblingKeys,
+        node.keys,
+        parent,
+        leftKeyIndex,
+        node.isLeaf,
+        leftSibling,
+        node
+      );
+    } else {
+      mergedNode = this._mergeNode(
+        node.keys,
+        rightSiblingKeys,
+        parent,
+        parent.findKey(node.keys[node.keys.length - 1].data).keyIndex,
+        node.isLeaf,
+        node,
+        rightSibling
+      );
+    }
+    if (parent.size === 0) {
+      this._root = mergedNode;
+      mergedNode.parent = null;
+    }
+    return mergedNode;
+  },
+  _mergeNode: function _mergeNode(
+    leftNodeKeys,
+    rightNodeKeys,
+    parent,
+    parentIndex,
+    isLeaf,
+    leftNode,
+    rightNode
+  ) {
+    const compareFunc = this._compareFunc;
+    const mergedNode = Object.create(BplusNode).init({
+      compareFunc,
+      isLeaf,
+      parent,
+    });
+    const parentNodeKeys = parent.keys;
+    if (parentIndex > 0) {
+      parentNodeKeys[parentIndex - 1].next = mergedNode;
+    }
+    if (parentIndex < parentNodeKeys.length - 1) {
+      parentNodeKeys[parentIndex + 1].prev = mergedNode;
+    }
+    if (!isLeaf) {
+      parentNodeKeys[parentIndex].prev =
+        leftNodeKeys[leftNodeKeys.length - 1].next;
+      parentNodeKeys[parentIndex].next = rightNodeKeys[0].prev;
+      mergedNode.keys = [parentNodeKeys[parentIndex]];
+    } else {
+      mergedNode.next = rightNode.next;
+      mergedNode.prev = leftNode.prev;
+      leftNode.prev.next = mergedNode;
+      rightNode.next.prev = mergedNode;
+    }
+    mergedNode.keys.unshift(...leftNodeKeys);
+    mergedNode.keys.push(...rightNodeKeys);
+    parentNodeKeys.splice(parentIndex, 1);
+    this._link(mergedNode);
+    return mergedNode;
   },
   _reDistribute: function _reDistribute(node) {
-    const { leftSiblingKeys, leftParentKey } = this._findLeftSibling(node);
-    const { rightSiblingKeys, rightParentkey } = this._findRightSibling(node);
     const parent = node.parent;
+    const { leftSiblingKeys, leftParentKey } = this._findLeftSiblingKeys(node);
+    const { rightSiblingKeys, rightParentkey } =
+      this._findRightSiblingKeys(node);
     let fromIndex, toIndex;
     let fixKey, workKeys, fixEntry;
     const maxSiblingLen = Math.max(
       leftSiblingKeys.length,
       rightSiblingKeys.length
     );
-    if (maxSiblingLen < this._min) {
+    if (maxSiblingLen <= this._min) {
       return false;
     }
     if (leftSiblingKeys.length > rightSiblingKeys.length) {
       fromIndex = leftSiblingKeys.length - 1;
       toIndex = 0;
-      fixEntry = parent.keys[parent.findKey(node.keys[0]).keyIndex];
-      fixKey = leftSiblingKeys.keys[fromIndex];
+      fixEntry = leftParentKey;
+      fixKey = leftSiblingKeys[fromIndex];
       workKeys = leftSiblingKeys;
+      workKeys[fromIndex].prev = workKeys[fromIndex].next;
+      workKeys[fromIndex].next = node.keys[toIndex].prev;
     } else {
       fromIndex = 0;
-      toIndex = node.length;
-      fixEntry = parent.keys[parent.findKey(node.keys[toIndex]).keyIndex];
-      fixKey = rightSiblingKeys.keys[1];
+      toIndex = node.keys.length;
+      fixEntry =
+        parent.keys[parent.findKey(node.keys[toIndex - 1].data).keyIndex];
+      fixKey = node.isLeaf ? rightSiblingKeys[1] : rightSiblingKeys[0];
       workKeys = rightSiblingKeys;
+      workKeys[fromIndex].next = workKeys[fromIndex].prev;
+      workKeys[fromIndex].prev = node.keys[toIndex - 1].next;
     }
-    fixEntry.data = fixKey.data;
-    node.keys.splice(toIndex, 0, workKeys.keys[fromIndex]);
-    workKeys.splice(fromIndex);
+    node.keys.splice(toIndex, 0, workKeys[fromIndex]);
+    const fixKeyData = fixKey.data;
+    if (!node.isLeaf) {
+      node.keys[toIndex].data = fixEntry.data;
+    }
+    fixEntry.data = fixKeyData;
+    workKeys.splice(fromIndex, 1);
+    this._link(node);
     return true;
   },
   _findLeftSiblingKeys: function _findLeftSiblingKeys(node) {
     const parent = node.parent;
     let leftSiblingKeys = [];
     let leftParentKey = null;
+    let leftKeyIndex = -1;
     if (parent.keys[0].prev === node) {
-      return { leftSiblingKeys, leftParentKey };
+      return {
+        leftSibling: null,
+        leftSiblingKeys,
+        leftParentKey,
+        leftKeyIndex,
+      };
     }
-    let keyIndex = 0;
-    for (; keyIndex < parent.size; ++keyIndex) {
-      leftParentKey = parent.keys[keyIndex];
+    ++leftKeyIndex;
+    for (; leftKeyIndex < parent.size; ++leftKeyIndex) {
+      leftParentKey = parent.keys[leftKeyIndex];
       if (leftParentKey.next === node) {
-        leftSiblingKeys = leftParentKey.next.keys;
+        leftSiblingKeys = leftParentKey.prev.keys;
         break;
       }
     }
-    if (keyIndex === 0) {
-      leftSiblingKeys = parentKey.prev.keys;
-    }
-    return { leftSiblingKeys, leftParentKey };
+    return {
+      leftSibling: leftParentKey.prev,
+      leftSiblingKeys,
+      leftParentKey,
+      leftKeyIndex,
+    };
   },
   _findRightSiblingKeys: function _findRightSiblingKeys(node) {
     const parent = node.parent;
     let rightSiblingKeys = [];
     let rightParentkey = parent.keys[0];
-
-    for (let keyIndex = 0; keyIndex < parent.size; ++keyIndex) {
-      rightParentkey = parent.keys[keyIndex];
+    let rightKeyIndex = 0;
+    for (; rightKeyIndex < parent.size; ++rightKeyIndex) {
+      rightParentkey = parent.keys[rightKeyIndex];
       if (rightParentkey.prev === node) {
         rightSiblingKeys = rightParentkey.next.keys;
-        return { rightSiblingKeys, rightParentkey };
+        return {
+          rightSibling: rightParentkey.next,
+          rightSiblingKeys,
+          rightParentkey,
+          rightKeyIndex,
+        };
       }
     }
-    return { rightSiblingKeys: [], rightParentkey: null };
+    return {
+      rightSibling: null,
+      rightSiblingKeys: [],
+      rightParentkey: null,
+      rightKeyIndex: -1,
+    };
   },
 };
 
