@@ -35,6 +35,66 @@
 
 새로운 BinaryNode 객체
 
+## B node
+
+### 생성 방법
+
+> Object.create(BNode).init({parent, isLeaf, compareFunc})
+
+*parameters*
+
+- parent(default: null): 새로 만든 노드와 연결된 부모 노드.
+- isLeaf(default: false): 트리 내부에서 leaf에 위치한 노드인지 여부.
+- compareFunc(required): 노드 내 key값들을 비교할 때 사용되는 함수
+
+*return*
+
+새로운 BNode객체
+
+### Method
+
+- *BNode.prototype.insert(data)*
+
+BNode 객체 key에 순서에 맞춰 data를 삽입한 후, 삽입된 위치의 인덱스를 반환합니다.
+
+- *BNode.prototype.findKey(data)*
+
+BNode 객체 key에서 data보다 큰 값중 가장 작은 key의 index와 prev에 연결된 자식을 반환합니다. 만약 data보다 큰 값이 없을 경우 가장 마지막 key의 next에 연결된 자식을 반환합니다.
+
+### Property
+
+- BNode.prototype.size
+
+BNode 객체가 가지고 있는 key값의 개수를 반환합니다.
+
+## B+ node
+
+BNode를 상속받아 만들어진 객체로 BNode가 가진 동일한 메소드를 사용할 수 있습니다.
+
+### 생성 방법
+
+> Object.create(BplusNode).init({parent, isLeaf, compareFunc})
+
+*parameters*
+
+- parent(default: null): 새로 만든 노드와 연결된 부모 노드.
+- isLeaf(default: false): 트리 내부에서 leaf에 위치한 노드인지 여부.
+- compareFunc(required): 노드 내 key값들을 비교할 때 사용되는 함수
+
+*return*
+
+새로운 BplusNode객체
+
+### Property
+
+- *BplusNode.next*
+
+BplusNode와 연결된 다음 노드를 반환합니다.
+
+- *BplusNode.prev*
+
+BplusNode와 연결된 이전 노드를 반환합니다.
+
 ## DoublyLinkedList(양방향 연결 리스트)
 
 ### 생성 방법
