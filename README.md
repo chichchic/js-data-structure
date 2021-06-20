@@ -39,13 +39,13 @@
 
 ### 생성 방법
 
-> Object.create(BNode).init({parent, isLeaf, compareFunc})
+> Object.create(BNode).init({parent, isLeaf, compareFunc*})
 
 *parameters*
 
 - parent(default: null): 새로 만든 노드와 연결된 부모 노드.
 - isLeaf(default: false): 트리 내부에서 leaf에 위치한 노드인지 여부.
-- compareFunc(required): 노드 내 key값들을 비교할 때 사용되는 함수
+- compareFunc(*): 노드 내 key값들을 비교할 때 사용되는 함수
 
 *return*
 
@@ -73,13 +73,13 @@ BNode를 상속받아 만들어진 객체로 BNode가 가진 동일한 메소드
 
 ### 생성 방법
 
-> Object.create(BplusNode).init({parent, isLeaf, compareFunc})
+> Object.create(BplusNode).init({parent, isLeaf, compareFunc*})
 
 *parameters*
 
 - parent(default: null): 새로 만든 노드와 연결된 부모 노드.
 - isLeaf(default: false): 트리 내부에서 leaf에 위치한 노드인지 여부.
-- compareFunc(required): 노드 내 key값들을 비교할 때 사용되는 함수
+- compareFunc(*): 노드 내 key값들을 비교할 때 사용되는 함수
 
 *return*
 
@@ -380,3 +380,93 @@ ttfTree 객체에 data값을 삽입하고 true를 반환합니다.
 - *ttfTree.prototype.remove(node)*
 
 ttfTree가 가지고 있는 해당 node를 삭제하고 true를 반환합니다. 만약 해당 node가 없을 경우 false를 반환합니다.
+
+## B Tree
+
+### 생성 방법
+
+> Object.create(BTree).init({compareFunc*, max})
+
+*parameter*
+
+- compareFunc(*): 정렬 순서를 결정하는데 사용되는 Boolean 반환값을 가지는 함수.
+- max(default = 3): 각 노드가 가질 수 있는 key값의 최대 개수
+
+*return*
+
+새로운 BTree객체
+
+### Method
+
+- *BTree.prototype.isEmpty()*
+
+BTree 객체가 비어있으면 true, 아니면 false를 반환합니다.
+
+- *BTree.prototype.size()*
+
+BTree 객체가 가지고 있는 키 값의 수를 반환합니다.
+
+- *BTree.prototype.has(data)*
+
+BTree 객체가 data값을 가지고 있을 경우 true, 아닐 경우 false를 반환합니다.
+
+- *BTree.prototype.find(data)*
+
+BTree 객체가 data를 가지고 있을 경우 해당 노드와 노드에서 몇 번째 키값인지 배열에 담아서 반환합니다. BTree 객체에서 data를 찾을 수 없을 경우 false를 반환합니다.
+
+- *BTree.prototype.print()*
+
+BTree 객체가 가지고 있는 노드의 값을 순서대로 배열에 담아 반환합니다. 만약, 객체가 비어있을 경우 false를 반환합니다.
+
+- *BTree.prototype.insert(data)*
+
+BTree 객체에 data값을 삽입하고 true를 반환합니다.
+
+- *BTree.prototype.remove(targetNode, targetIndex)*
+
+BTree 가지고 있는 해당 node에서 해당되는 Index의 값을 삭제하고 true를 반환합니다. 만약 해당 node가 없을 경우 false를 반환합니다.
+
+# B+ Tree
+
+### 생성 방법
+
+> Object.create(BplusTree).init({compareFunc*, max})
+
+*parameter*
+
+- compareFunc(*): 정렬 순서를 결정하는데 사용되는 Boolean 반환값을 가지는 함수.
+- max(default = 3): 각 노드가 가질 수 있는 key값의 최대 개수
+
+*return*
+
+새로운 BplusTree 객체
+
+### Method
+
+- *BplusTree.prototype.isEmpty()*
+
+BplusTree 객체가 비어있으면 true, 아니면 false를 반환합니다.
+
+- *BplusTree.prototype.size()*
+
+BplusTree 객체가 가지고 있는 키 값의 수를 반환합니다.
+
+- *BplusTree.prototype.has(data)*
+
+BplusTree 객체가 data값을 가지고 있을 경우 true, 아닐 경우 false를 반환합니다.
+
+- *BplusTree.prototype.find(data)*
+
+BplusTree 객체가 data를 가지고 있을 경우 해당 node와 keyIndex를 객체에 담아 {node, keyIndex} 형식으로 반환합니다. BplusTree 객체에서 data를 찾을 수 없을 경우 false를 반환합니다.
+
+- *BplusTree.prototype.print()*
+
+BplusTree 객체가 가지고 있는 노드의 값을 순서대로 배열에 담아 반환합니다. 만약, 객체가 비어있을 경우 false를 반환합니다.
+
+- *BplusTree.prototype.insert(data)*
+
+BplusTree 객체에 data값을 삽입하고 true를 반환합니다.
+
+- *BplusTree.prototype.remove(data)*
+
+BplusTree 가지고 있는 data를 삭제합니다. 만약 해당 값이 없을 경우 false를 반환합니다.
