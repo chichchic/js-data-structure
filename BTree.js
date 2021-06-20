@@ -116,11 +116,12 @@ const BTree = {
     prev.keys = node.keys.slice(0, mid);
     parent.keys[insertIndex].next = next;
     parent.keys[insertIndex].prev = prev;
+    // TODO: 수정부분 왜 정상 작동 했었는지 파악하기.
     if (insertIndex > 0) {
-      this.keys[insertIndex - 1].next = prev;
+      parent.keys[insertIndex - 1].next = prev;
     }
     if (insertIndex < parent.size - 1) {
-      this.keys[insertIndex + 1].prev = next;
+      parent.keys[insertIndex + 1].prev = next;
     }
     return parent;
   },
