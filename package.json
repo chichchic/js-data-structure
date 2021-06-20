@@ -1,11 +1,12 @@
 {
-  "name": "js-data-structure",
-  "version": "1.0.0",
+  "name": "@chichchic/js-data-structure",
+  "version": "0.1.0",
   "main": "index.js",
   "repository": "https://github.com/chichchic/js-data-structure.git",
-  "author": "chicichich <pch6789@naver.com>",
+  "author": "chicichich <chichchic6789@gmail.com>",
   "license": "MIT",
   "type": "module",
+  "keywords": ["js", "JavaScript", "data structure", "algorithm", "queue", "tree", "stack", "linkedList", "RedBlackTree", "AVLTree", "234Tree", "Heap", "BinaryTree", "BTree", "BplusTree", "ES6"],
   "scripts": {
     "start": "node index.js"
   }
