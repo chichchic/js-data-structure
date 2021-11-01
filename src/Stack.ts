@@ -6,10 +6,10 @@ export default class Stack<T> {
     this.cursor = null;
     this.size = 0;
   }
-  getSize() {
+  getSize(): number {
     return this.size;
   }
-  push(data: T) {
+  push(data: T): void {
     const newNode = new LinkedNode({ data });
     this.size++;
     if (this.size === 0) {
@@ -19,20 +19,20 @@ export default class Stack<T> {
     newNode.setPrev(this.cursor);
     this.cursor = newNode;
   }
-  pop() {
+  pop(): void {
     if (this.cursor === null) {
       throw Error("Error:: Empty Stack");
     }
     this.size--;
     this.cursor = <LinkedNode<T>>this.cursor.getPrev();
   }
-  top() {
+  top(): T {
     if (this.cursor === null) {
       throw Error("Error:: Empty Stack");
     }
     return this.cursor.getData();
   }
-  isEmpty() {
+  isEmpty(): boolean {
     return this.size === 0;
   }
 }

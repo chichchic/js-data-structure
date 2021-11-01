@@ -18,7 +18,7 @@ export default class LinkedNode<T> extends Cusor<T> {
     }
     this.next = source.next ? source.next : null;
   }
-  getData() {
+  getData(): T {
     return this.data;
   }
 }
