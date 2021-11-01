@@ -24,7 +24,7 @@ export default class Stack<T> {
       throw Error("Error:: Empty Stack");
     }
     this.size--;
-    this.cursor = this.cursor.getPrev();
+    this.cursor = <LinkedNode<T>>this.cursor.getPrev();
   }
   top() {
     if (this.cursor === null) {

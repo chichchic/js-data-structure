@@ -1,31 +1,22 @@
-type nodeLinking<T> = LinkedNode<T> | null;
+import Cusor from "./Cursor";
 
 interface node<T> {
-  prev?: nodeLinking<T>;
-  next?: nodeLinking<T>;
+  prev?: Cusor<T>;
+  next?: Cusor<T>;
   data: T;
 }
-export default class LinkedNode<T> {
-  private prev: nodeLinking<T>;
-  private next: nodeLinking<T>;
+export default class LinkedNode<T> extends Cusor<T> {
   private data: T;
   constructor(source: node<T>) {
+    super();
     this.data = source.data;
-    this.prev = source.prev ? source.prev : null;
+    if (source.prev !== undefined) {
+      this.prev = source.prev;
+    }
+    if (source.next !== undefined) {
+      this.next = source.next;
+    }
     this.next = source.next ? source.next : null;
-  }
-
-  getPrev() {
-    return this.prev;
-  }
-  setPrev(newPrev: nodeLinking<T>) {
-    this.prev = newPrev;
-  }
-  getNext() {
-    return this.next;
-  }
-  setNext(newNext: nodeLinking<T>) {
-    this.next = newNext;
   }
   getData() {
     return this.data;
