@@ -5,6 +5,17 @@ import LinkedNode from "@src/Node/LinkedNode";
 
 //FIXME: 반복되는 코드 밖으로 빼서 중복 줄여주기
 describe("DoubleLinkedList util methods", () => {
+  describe("isEmpty method", () => {
+    it("should isEmpty return true when DoubleLinkedList is empty", () => {
+      const dll = new DoubleLinkedList<number>();
+      expect(dll.isEmpty()).to.be.true;
+    });
+    it("should isEmpty return false when DoubleLinkedList isn't empty", () => {
+      const dll = new DoubleLinkedList<number>();
+      dll.pushBack(1);
+      expect(dll.isEmpty()).to.be.false;
+    });
+  });
   it("should pushNext insert next of target", () => {
     const dll = new DoubleLinkedList<number>();
     dll.pushFront(0);
