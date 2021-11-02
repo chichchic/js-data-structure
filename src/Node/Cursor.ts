@@ -1,5 +1,5 @@
-type pointer<T> = cursor<T> | null;
-export default class cursor<T> {
+type pointer<T> = Cursor<T> | null;
+export default class Cursor<T> {
   protected prev: pointer<T>;
   protected next: pointer<T>;
   constructor() {
