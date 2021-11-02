@@ -64,7 +64,7 @@ describe("DoubleLinkedList util methods", () => {
     dll.pushBack(0);
     expect(dll.getSize()).to.equal(1);
   });
-  it("should pushFront insert front of DoubleLinkedList", () => {
+  it("should pushBack insert front of DoubleLinkedList", () => {
     const dll = new DoubleLinkedList<number>();
     dll.pushBack(0);
     expect(dll.back().getData()).to.equal(0);
