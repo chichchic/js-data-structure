@@ -1,4 +1,4 @@
-type pointer<T> = Cursor<T> | null;
+import { pointer } from "Global";
 export default class Cursor<T> {
   protected prev: pointer<T>;
   protected next: pointer<T>;
