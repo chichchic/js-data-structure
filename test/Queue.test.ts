@@ -8,9 +8,9 @@ describe("Queue util methods", () => {
     queue = new Queue<number>();
   });
   it("should push increase size", () => {
-    expect(queue.getSize()).to.equal(0);
+    expect(queue.size).to.equal(0);
     queue.push(0);
-    expect(queue.getSize()).to.equal(1);
+    expect(queue.size).to.equal(1);
   });
   it("should isEmpty return true when Queue is empty", () => {
     expect(queue.isEmpty()).to.be.true;
@@ -30,15 +30,15 @@ describe("Queue util methods", () => {
     expect(queue.has(1)).to.be.false;
   });
   it("should push increase size", () => {
-    expect(queue.getSize()).to.equal(0);
+    expect(queue.size).to.equal(0);
     queue.push(1);
-    expect(queue.getSize()).to.equal(1);
+    expect(queue.size).to.equal(1);
   });
   it("should pop decrease size", () => {
     queue.push(1);
-    expect(queue.getSize()).to.equal(1);
+    expect(queue.size).to.equal(1);
     queue.pop();
-    expect(queue.getSize()).to.equal(0);
+    expect(queue.size).to.equal(0);
   });
   it("should queue is follow the FIFO rule", () => {
     const targetValues = [1, 2, 3, 4];

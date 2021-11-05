@@ -5,16 +5,16 @@ import { expect } from "chai";
 describe("Stack util method", () => {
   it("should push method increasing size", () => {
     const st = new Stack<number>();
-    expect(st.getSize()).to.equal(0);
+    expect(st.size).to.equal(0);
     st.push(1);
-    expect(st.getSize()).to.equal(1);
+    expect(st.size).to.equal(1);
   });
   it("should pop method decreasing size", () => {
     const st = new Stack<number>();
     st.push(1);
-    expect(st.getSize()).to.equal(1);
+    expect(st.size).to.equal(1);
     st.pop();
-    expect(st.getSize()).to.equal(0);
+    expect(st.size).to.equal(0);
   });
   it("should top method's return value is last push value", () => {
     const st = new Stack<number>();
