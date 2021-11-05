@@ -95,10 +95,10 @@ export default class DoubleLinkedList<T> {
     return true;
   }
   //FIXME: erase와 중복 부분 없애기.
-  popBack(): boolean {
+  popBack(): void {
     const target = this.tail.getPrev();
     if (target === this.head || target === null) {
-      return false;
+      throw new ReferenceError("Error:: DoubleLinkedList is Empty");
     }
     const targetPrev = target.getPrev();
     const targetNext = target.getNext();
@@ -108,12 +108,11 @@ export default class DoubleLinkedList<T> {
     targetPrev.setNext(targetNext);
     targetNext.setPrev(targetPrev);
     this._size--;
-    return true;
   }
-  popFront(): boolean {
+  popFront(): void {
     const target = this.head.getNext();
     if (target === this.tail || target === null) {
-      return false;
+      throw new ReferenceError("Error:: DoubleLinkedList is Empty");
     }
     const targetPrev = target.getPrev();
     const targetNext = target.getNext();
@@ -123,6 +122,5 @@ export default class DoubleLinkedList<T> {
     targetPrev.setNext(targetNext);
     targetNext.setPrev(targetPrev);
     this._size--;
-    return true;
   }
 }
