@@ -25,14 +25,17 @@
   ],
   "scripts": {
     "start": "npx ts-node -r tsconfig-paths/register src/Stack.ts",
-    "test": "npx mocha -r ts-node/register -r tsconfig-paths/register ./test/**/*.test.ts"
+    "test": "npx mocha -r ts-node/register -r tsconfig-paths/register ./test/**/*.test.ts",
+    "test:coverage": "nyc yarn test"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.6",
     "chai": "^4.3.4",
     "mocha": "^9.1.3",
+    "nyc": "^15.1.0",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.11.0",
     "typescript": "^4.4.4"
