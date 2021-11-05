@@ -1,17 +1,17 @@
 import LinkedNode from "@src/Node/LinkedNode";
 export default class Stack<T> {
   private cursor: LinkedNode<T> | null;
-  private size: number;
+  private _size: number;
   constructor() {
     this.cursor = null;
-    this.size = 0;
+    this._size = 0;
   }
-  getSize(): number {
-    return this.size;
+  get size(): number {
+    return this._size;
   }
   push(data: T): void {
     const newNode = new LinkedNode({ data });
-    this.size++;
+    this._size++;
     if (this.size === 0) {
       this.cursor = newNode;
       return;
@@ -23,7 +23,7 @@ export default class Stack<T> {
     if (this.cursor === null) {
       throw Error("Error:: Empty Stack");
     }
-    this.size--;
+    this._size--;
     this.cursor = <LinkedNode<T>>this.cursor.getPrev();
   }
   top(): T {
