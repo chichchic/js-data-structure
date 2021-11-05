@@ -1,21 +1,21 @@
 import { pointer } from "Global";
 export default class Cursor<T> {
-  protected prev: pointer<T, Cursor<T>>;
-  protected next: pointer<T, Cursor<T>>;
+  protected prev: pointer<Cursor<T>>;
+  protected next: pointer<Cursor<T>>;
   constructor() {
     this.prev = null;
     this.next = null;
   }
-  getPrev(): pointer<T, Cursor<T>> {
+  getPrev(): pointer<Cursor<T>> {
     return this.prev;
   }
-  setPrev(newPrev: pointer<T, Cursor<T>>): void {
+  setPrev(newPrev: pointer<Cursor<T>>): void {
     this.prev = newPrev;
   }
-  getNext(): pointer<T, Cursor<T>> {
+  getNext(): pointer<Cursor<T>> {
     return this.next;
   }
-  setNext(newNext: pointer<T, Cursor<T>>): void {
+  setNext(newNext: pointer<Cursor<T>>): void {
     this.next = newNext;
   }
 }
