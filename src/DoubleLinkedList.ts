@@ -5,16 +5,16 @@ import Cursor from "@src/Node/Cursor";
 export default class DoubleLinkedList<T> {
   private head: Cursor<T>;
   private tail: Cursor<T>;
-  private size: number;
+  private _size: number;
   constructor() {
     this.head = new Cursor();
     this.tail = new Cursor();
     this.head.setNext(this.tail);
     this.tail.setPrev(this.head);
-    this.size = 0;
+    this._size = 0;
   }
-  getSize(): number {
-    return this.size;
+  get size(): number {
+    return this._size;
   }
   isEmpty(): boolean {
     return this.size === 0;
@@ -39,7 +39,7 @@ export default class DoubleLinkedList<T> {
     newNode.setNext(target.getNext());
     target.getNext()?.setPrev(newNode);
     target.setNext(newNode);
-    this.size++;
+    this._size++;
   }
   pushPrev(target: Cursor<T>, data: T): void {
     const newNode = new LinkedNode({ data });
@@ -47,7 +47,7 @@ export default class DoubleLinkedList<T> {
     newNode.setNext(target);
     target.getPrev()?.setNext(newNode);
     target.setPrev(newNode);
-    this.size++;
+    this._size++;
   }
   pushFront(data: T): void {
     this.pushNext(this.head, data);
@@ -91,7 +91,7 @@ export default class DoubleLinkedList<T> {
     }
     cursorPrev.setNext(cursorNext);
     cursorNext.setPrev(cursorPrev);
-    this.size--;
+    this._size--;
     return true;
   }
   //FIXME: erase와 중복 부분 없애기.
@@ -107,7 +107,7 @@ export default class DoubleLinkedList<T> {
     }
     targetPrev.setNext(targetNext);
     targetNext.setPrev(targetPrev);
-    this.size--;
+    this._size--;
     return true;
   }
   popFront(): boolean {
@@ -122,7 +122,7 @@ export default class DoubleLinkedList<T> {
     }
     targetPrev.setNext(targetNext);
     targetNext.setPrev(targetPrev);
-    this.size--;
+    this._size--;
     return true;
   }
 }
