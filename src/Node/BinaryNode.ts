@@ -3,17 +3,20 @@ interface node<T> {
   parent?: pointer<BinaryNode<T>>;
   left?: pointer<BinaryNode<T>>;
   right?: pointer<BinaryNode<T>>;
+  height?: number;
   data: T;
 }
 export default class BinaryNode<T> {
   protected _parent: pointer<BinaryNode<T>>;
   protected _left: pointer<BinaryNode<T>>;
   protected _right: pointer<BinaryNode<T>>;
+  protected _height: number;
   protected _data: T;
   constructor(source: node<T>) {
     this._parent = source.parent === undefined ? null : source.parent;
     this._left = source.left === undefined ? null : source.left;
     this._right = source.right === undefined ? null : source.right;
+    this._height = source.height === undefined ? 0 : source.height;
     this._data = source.data;
   }
   public get parent(): pointer<BinaryNode<T>> {
@@ -39,5 +42,11 @@ export default class BinaryNode<T> {
   }
   public set data(value: T) {
     this._data = value;
+  }
+  public get height(): number {
+    return this._height;
+  }
+  public set height(value: number) {
+    this._height = value;
   }
 }
