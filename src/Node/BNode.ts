@@ -1,6 +1,7 @@
 import DoubleLinkedList from "@src/DoubleLinkedList";
 import LinkedNode from "@src/Node/LinkedNode";
 import { compareFuncType, keyIndex } from "Global";
+import BinaryNode from "./BinaryNode";
 
 interface source<T, U> {
   compareFunc: compareFuncType<T>;
@@ -11,23 +12,28 @@ export default class BNode<T, U> {
   private _isLeaf: boolean;
   private _parent: BNode<T, U> | null;
   private compareFunc: compareFuncType<T>;
-  private store: DoubleLinkedList<keyIndex<T, U>>;
+  private store: DoubleLinkedList<BinaryNode<keyIndex<T, U>>>;
   constructor(src: source<T, U>) {
     this.compareFunc = src.compareFunc;
     this.parent = src.parent === undefined ? null : src.parent;
     this.isLeaf = src.isLeaf === undefined ? false : src.isLeaf;
-    this.store = new DoubleLinkedList<keyIndex<T, U>>();
+    this.store = new DoubleLinkedList<BinaryNode<keyIndex<T, U>>>();
   }
   insert(key: T, index: U): void {
-    const data = new keyIndex<T, U>(key, index);
+    const data = new BinaryNode<keyIndex<T, U>>({
+      data: new keyIndex(key, index),
+    });
     if (this.store.size === 0) {
       this.store.pushBack(data);
       return;
     }
-    let cursor: LinkedNode<keyIndex<T, U>> | null = <
-      LinkedNode<keyIndex<T, U>>
+    let cursor: LinkedNode<BinaryNode<keyIndex<T, U>>> | null = <
+      LinkedNode<BinaryNode<keyIndex<T, U>>>
     >this.store.front();
-    while (cursor !== null && this.compareFunc(cursor.getData().key, key)) {
+    while (
+      cursor !== null &&
+      this.compareFunc(cursor.getData().data.key, key)
+    ) {
       cursor = cursor.getNextNode();
     }
     if (cursor === null) {
