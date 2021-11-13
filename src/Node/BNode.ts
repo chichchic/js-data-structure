@@ -1,7 +1,8 @@
 import DoubleLinkedList from "@src/DoubleLinkedList";
 import LinkedNode from "@src/Node/LinkedNode";
-import { compareFuncType, keyIndex } from "Global";
-import BinaryNode from "./BinaryNode";
+import { compareFuncType } from "Global";
+import keyIndex from "@src/Node/keyIndex";
+import BLinkedNode from "./BLinkedNode";
 
 interface source<T, U> {
   compareFunc: compareFuncType<T>;
@@ -12,24 +13,36 @@ export default class BNode<T, U> {
   private _isLeaf: boolean;
   private _parent: BNode<T, U> | null;
   private compareFunc: compareFuncType<T>;
-  private store: DoubleLinkedList<BinaryNode<keyIndex<T, U>>>;
+  private store: DoubleLinkedList<BLinkedNode<T, U>>;
   constructor(src: source<T, U>) {
     this.compareFunc = src.compareFunc;
     this.parent = src.parent === undefined ? null : src.parent;
     this.isLeaf = src.isLeaf === undefined ? false : src.isLeaf;
-    this.store = new DoubleLinkedList<BinaryNode<keyIndex<T, U>>>();
+    this.store = new DoubleLinkedList<BLinkedNode<T, U>>();
   }
-  insert(key: T, index: U): void {
-    const data = new BinaryNode<keyIndex<T, U>>({
-      data: new keyIndex(key, index),
+  getFirstLinkedNode(): LinkedNode<BLinkedNode<T, U>> | null {
+    try {
+      return this.store.front();
+    } catch (error) {
+      return null;
+    }
+  }
+  getLastLinkedNode(): LinkedNode<BLinkedNode<T, U>> | null {
+    try {
+      return this.store.back();
+    } catch (error) {
+      return null;
+    }
+  }
+  insert(key: T, index: U): LinkedNode<BLinkedNode<T, U>> {
+    const data = new BLinkedNode<T, U>({
+      data: new keyIndex<T, U>(key, index),
     });
     if (this.store.size === 0) {
       this.store.pushBack(data);
-      return;
+      return this.store.back();
     }
-    let cursor: LinkedNode<BinaryNode<keyIndex<T, U>>> | null = <
-      LinkedNode<BinaryNode<keyIndex<T, U>>>
-    >this.store.front();
+    let cursor: LinkedNode<BLinkedNode<T, U>> | null = this.store.front();
     while (
       cursor !== null &&
       this.compareFunc(cursor.getData().data.key, key)
@@ -38,8 +51,10 @@ export default class BNode<T, U> {
     }
     if (cursor === null) {
       this.store.pushBack(data);
+      return this.store.back();
     } else {
       this.store.pushPrev(cursor, data);
+      return cursor.getPrevNode() as LinkedNode<BLinkedNode<T, U>>;
     }
   }
   get size(): number {
