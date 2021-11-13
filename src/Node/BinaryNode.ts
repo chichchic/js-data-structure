@@ -1,11 +1,5 @@
-import { pointer } from "Global";
-interface node<T> {
-  parent?: pointer<BinaryNode<T>>;
-  left?: pointer<BinaryNode<T>>;
-  right?: pointer<BinaryNode<T>>;
-  height?: number;
-  data: T;
-}
+import { pointer, node } from "Global";
+
 export default class BinaryNode<T> {
   protected _parent: pointer<BinaryNode<T>>;
   protected _left: pointer<BinaryNode<T>>;
