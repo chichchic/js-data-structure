@@ -1,3 +1,4 @@
+import { pointer } from "Global";
 import Cusor from "./Cursor";
 
 interface node<T> {
@@ -10,13 +11,28 @@ export default class LinkedNode<T> extends Cusor<T> {
   constructor(source: node<T>) {
     super();
     this.data = source.data;
-    if (source.prev !== undefined) {
-      this.prev = source.prev;
+    this.prev = source.prev == undefined ? null : source.prev;
+    this.next = source.next == undefined ? null : source.next;
+  }
+  getNextNode(): LinkedNode<T> | null {
+    const ret = this.getNext();
+    if (ret === null) {
+      throw Error("Error:: cursor is null");
     }
-    if (source.next !== undefined) {
-      this.next = source.next;
+    if ("getData" in <LinkedNode<T>>ret) {
+      return <LinkedNode<T>>ret;
     }
-    this.next = source.next ? source.next : null;
+    return null;
+  }
+  getPrevNode(): LinkedNode<T> | null {
+    const ret: pointer<Cusor<T>> = this.getPrev();
+    if (ret === null) {
+      throw Error("Error:: cursor is null");
+    }
+    if ("getData" in <LinkedNode<T>>ret) {
+      return <LinkedNode<T>>ret;
+    }
+    return null;
   }
   getData(): T {
     return this.data;
