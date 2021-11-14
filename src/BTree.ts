@@ -20,7 +20,33 @@ export default class BTree<T, U> {
     return this.size === 0;
   }
   getIndex(key: T): U | null {
-    console.log(key);
+    let cursor = this.root;
+    while (cursor != null) {
+      let innerCursor = cursor.getFirstLinkedNode();
+      while (innerCursor != null) {
+        const innerCurKey = (
+          innerCursor as LinkedNode<BLinkedNode<T, U>>
+        ).getData().data.key;
+        if (innerCurKey === key) {
+          return (innerCursor as LinkedNode<BLinkedNode<T, U>>).getData().data
+            .index;
+        }
+        if (this.compareFunc(key, innerCurKey)) {
+          break;
+        }
+        innerCursor = innerCursor.getNextNode();
+      }
+      if (cursor.isLeaf) {
+        break;
+      }
+      if (innerCursor === null) {
+        cursor = (
+          cursor.getLastLinkedNode() as LinkedNode<BLinkedNode<T, U>>
+        ).getData().next;
+      } else {
+        cursor = (innerCursor as LinkedNode<BLinkedNode<T, U>>).getData().prev;
+      }
+    }
     return null;
   }
   insert(key: T, index: U): void {
