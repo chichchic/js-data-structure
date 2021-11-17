@@ -18,6 +18,9 @@ export default class BLinkedNode<T, U> {
   public get data(): keyIndex<T, U> {
     return this._data;
   }
+  public set data(value: keyIndex<T, U>) {
+    this._data = value;
+  }
   public get prev(): BNode<T, U> | null {
     return this._prev;
   }
