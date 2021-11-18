@@ -61,10 +61,10 @@ export default class BNode<T, U> {
     try {
       let cursor: LinkedNode<BLinkedNode<T, U>> | null = this.store.front();
       while (cursor !== null) {
-        cursor = cursor.getNextNode() as LinkedNode<BLinkedNode<T, U>>;
         if (cursor.getData().data.key === key) {
           return this.store.erase(cursor);
         }
+        cursor = cursor.getNextNode() as LinkedNode<BLinkedNode<T, U>>;
       }
     } catch (e) {
       if (e instanceof ReferenceError) {
