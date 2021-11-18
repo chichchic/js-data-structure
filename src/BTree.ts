@@ -105,8 +105,8 @@ export default class BTree<T, U> {
       parent,
     });
     this.moveEntry(next, node, this.min + 1, this.max - 1);
-    const [midKye, midIndex] = this.getDataByIndex(node, this.min);
-    const cursor = parent.insert(midKye, midIndex);
+    const [midKey, midIndex] = this.getDataByIndex(node, this.min);
+    const cursor = parent.insert(midKey, midIndex);
     cursor.getData().prev = prev;
     const cursorPrev = cursor.getPrevNode();
     if (cursorPrev !== null) {
