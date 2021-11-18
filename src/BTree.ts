@@ -98,7 +98,7 @@ export default class BTree<T, U> {
       isLeaf: node.isLeaf,
       parent,
     });
-    this.moveEntry(prev, node, 0, this.min - 1);
+    this.moveEntry(prev, node, 0, this.min - 2);
     const next = new BNode<T, U>({
       compareFunc: this.compareFunc,
       isLeaf: node.isLeaf,
