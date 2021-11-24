@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "start": "npx ts-node -r tsconfig-paths/register src/Stack.ts",
-    "test": "npx mocha -r ts-node/register -r tsconfig-paths/register ./test/**/*.test.ts",
+    "test": "npx mocha --recursive -r ts-node/register -r tsconfig-paths/register \"test/**/*.test.ts\"",
     "test:coverage": "nyc yarn test"
   },
   "devDependencies": {
