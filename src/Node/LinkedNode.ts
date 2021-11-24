@@ -1,12 +1,12 @@
 import { pointer } from "Global";
-import Cusor from "./Cursor";
+import Cursor from "./Cursor";
 
 interface node<T> {
-  prev?: Cusor<T>;
-  next?: Cusor<T>;
+  prev?: Cursor<T>;
+  next?: Cursor<T>;
   data: T;
 }
-export default class LinkedNode<T> extends Cusor<T> {
+export default class LinkedNode<T> extends Cursor<T> {
   private data: T;
   constructor(source: node<T>) {
     super();
